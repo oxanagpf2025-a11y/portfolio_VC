@@ -85,6 +85,7 @@ a:hover {
     radial-gradient(ellipse 45% 35% at 10% 70%, var(--accent-dim) 0%, transparent 50%),
     radial-gradient(ellipse 30% 25% at 50% 100%, rgba(232, 160, 74, 0.08) 0%, transparent 45%);
   opacity: 0.9;
+  animation: mesh-drift 18s ease-in-out infinite alternate;
 }
 
 .scroll-progress {
@@ -315,7 +316,7 @@ main,
 .hero-layout {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 360px) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 360px);
   gap: clamp(1.5rem, 4vw, 3rem);
   align-items: start;
 }
@@ -326,7 +327,7 @@ main,
   }
 
   .eyebrow {
-    display: none;
+    display: block;
   }
 
   .hero-photo-wrap {
@@ -890,6 +891,25 @@ main,
     box-shadow 0.45s var(--ease-out);
   position: relative;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  overflow: hidden;
+}
+
+.project-card::after {
+  content: "";
+  position: absolute;
+  inset: -35% auto -35% -25%;
+  width: 38%;
+  transform: rotate(14deg) translateX(-220%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 35%,
+    rgba(212, 248, 90, 0.24) 50%,
+    rgba(255, 255, 255, 0.05) 65%,
+    transparent 100%
+  );
+  opacity: 0;
+  pointer-events: none;
 }
 
 .project-card:nth-child(even) {
@@ -906,6 +926,11 @@ main,
   transform: translateY(-2px);
   border-color: rgba(212, 248, 90, 0.35);
   box-shadow: 0 20px 50px -24px rgba(212, 248, 90, 0.12);
+}
+
+.project-card:hover::after {
+  opacity: 0.9;
+  animation: card-sheen 1.35s var(--ease-out) 1;
 }
 
 .project-card:nth-child(even):hover {
@@ -1216,10 +1241,14 @@ main,
   font-family: var(--font-display);
   font-size: clamp(5rem, 18vw, 10rem);
   line-height: 0.5;
-  color: rgba(212, 248, 90, 0.12);
+  color: rgba(212, 248, 90, 0.36);
   margin-bottom: -0.5rem;
   user-select: none;
   pointer-events: none;
+  text-shadow:
+    0 0 18px rgba(212, 248, 90, 0.45),
+    0 0 46px rgba(212, 248, 90, 0.2);
+  animation: quote-glow 3.6s ease-in-out infinite;
 }
 
 .manifest-quote {
@@ -1385,11 +1414,44 @@ main,
   filter: blur(0);
 }
 
+@keyframes mesh-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(2.2%, -2%, 0) scale(1.03);
+  }
+}
+
+@keyframes quote-glow {
+  0%,
+  100% {
+    opacity: 0.88;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.03);
+  }
+}
+
+@keyframes card-sheen {
+  0% {
+    transform: rotate(14deg) translateX(-220%);
+  }
+  100% {
+    transform: rotate(14deg) translateX(360%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-main > *,
   .hero-rail,
   .hero-photo-wrap,
-  .hero-photo-wrap::after {
+  .hero-photo-wrap::after,
+  .mesh-fixed,
+  .manifest-mark,
+  .project-card::after {
     animation: none !important;
   }
 
